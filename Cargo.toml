@@ -5,3 +5,5 @@ authors = ["root"]
 
 [dependencies]
 nickel = "0.8"
+rand = "0.3"
+
