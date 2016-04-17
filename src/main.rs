@@ -1,7 +1,9 @@
 #[macro_use] extern crate nickel;
 extern crate rand;
+extern crate rustc_serialize;
 
 
+use rustc_serialize::json;
 use nickel::Nickel;
 use rand::random;
 
@@ -26,7 +28,7 @@ fn main() {
 
     server.utilize(router! {
         get "/list" => |_req, _res| {
-            tokens.lock().unwrap().keys().map(ToString::to_string).collect::<Vec<_>>().join(",")
+            json::encode(&tokens.lock().unwrap().keys().map(ToString::to_string).collect::<Vec<_>>()).unwrap()
         }
     });
 
