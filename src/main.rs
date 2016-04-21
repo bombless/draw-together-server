@@ -1,6 +1,7 @@
 #[macro_use] extern crate nickel;
 extern crate rand;
 extern crate rustc_serialize;
+extern crate time;
 
 
 use rustc_serialize::json;
@@ -32,6 +33,20 @@ fn main() {
         }
     });
 
+    let last_update_time = Mutex::new(time::now());
+
+    server.utilize(router! {
+        get "/testList" => |_req, _res| {
+            let mut guard = last_update_time.lock().unwrap();
+            if *guard + time::Duration::seconds(5) > time::now() {
+               "[]".to_string()
+            } else {
+                *guard = time::now();
+                let (x, y) = rand::random::<(u8, u8)>();
+                format!("[{{\"type\":1,\"radius\":0.3,\"x\":{},\"y\":{}}}]", x as f32 / 256.0, y as f32 / 256.0)
+            }
+        }
+    });
 
     server.listen("0.0.0.0:6767");
 }
